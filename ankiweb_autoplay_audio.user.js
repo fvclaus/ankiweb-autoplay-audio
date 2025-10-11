@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         Autoplay Audio AnkiWeb
+// @description  Automatically plays audio files on AnkiWeb
 // @namespace    http://tampermonkey.net/
-// @version      2024-07-13-v2
+// @version      2025-10-11
 // @author       Frederik Claus
 // @match        https://ankiuser.net/study
 // @grant        none
-// @version      1
 // ==/UserScript==
 
 (async function () {
@@ -35,14 +35,14 @@
       }, 50);
     });
   };
-  let audioSrcs = [];
+  let audioSources = [];
   let previousAbortController = new AbortController();
   const observer = async () => {
     console.log("Canceling previous playback");
     previousAbortController.abort();
     console.log(
       "Checking for new audio elements to play. Previous audio files",
-      audioSrcs,
+      audioSources,
     );
     const currentAbortController = new AbortController();
     previousAbortController = currentAbortController;
@@ -53,17 +53,17 @@
     currentAbortController.signal.addEventListener("abort", onAbort, {
       once: true,
     });
-    const previousAudioSrcs = [...audioSrcs];
-    audioSrcs = [];
+    const previousAudioSources = [...audioSources];
+    audioSources = [];
     for (const audioElement of document.getElementsByTagName("audio")) {
       for (const sourceElement of audioElement.getElementsByTagName("source")) {
         if (aborted) {
           return;
         }
         const source = sourceElement.src;
-        if (!previousAudioSrcs.includes(source)) {
+        if (!previousAudioSources.includes(source)) {
           console.log("Playing audio", source);
-          audioSrcs.push(source);
+          audioSources.push(source);
           audioElement.play();
           await awaitPlaybackEnded(audioElement);
         } else {
