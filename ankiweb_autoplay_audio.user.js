@@ -5,6 +5,7 @@
 // @author       Frederik Claus
 // @match        https://ankiuser.net/study
 // @grant        none
+// @version      1
 // ==/UserScript==
 
 (async function () {
